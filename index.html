@@ -1,0 +1,202 @@
+<html>
+<head>
+    <meta charset="utf8">
+    <link rel="stylesheet" src="style.css">
+    <title>Very Nice Clicker Game!!!!</title>
+
+    <style>
+    @import url('https://fonts.googleapis.com/css?family=Nanum+Gothic:400,700,800&display=swap');
+
+        html {
+            font-family : 'Nanum Gothic';
+            text-align: center;
+            color: white;
+            background-color: #040404;
+            user-select: none;
+        }
+
+        h1 {
+            font-size:60px;
+        }
+
+        p {
+            padding: 25px;
+        }
+        
+        .standardButtonDesign {
+            font-size: 30px;
+            margin-top: 10px;
+            padding: 15px;
+            border: 4px solid rgb(30, 30, 30);
+            border-radius: 10px;
+            background-color: #363636;
+            color: white;
+            text-decoration: none;
+        }
+
+        #money {
+            font-size: 60px;
+            color: #00ff0d;
+            margin-bottom: 0px;
+        }
+
+        #clicker {
+            background-color:  rgb(0, 149, 255);
+            border: 4px solid rgb(0, 74, 127);
+        }
+        
+        .moneyBox {
+            padding-bottom: 0px;
+
+        }
+
+        .upgrade {
+            font-size: 26px;
+            padding: 10px;
+            margin-left: 3px;
+        }
+
+        .infoP {
+            color: yellow;
+            font-size: 25px;
+            padding: 0px;
+            margin: 0;
+        }
+
+        .game {
+            border: 4px solid rgb(0, 12, 81);
+            background-color: #010027;
+            border-radius: 10px;
+            padding-top: 30px;
+            padding-bottom: 60px;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>Clicker Game</h1>
+        </div>
+    </header>
+    <main>
+        <div class="game">
+
+            <div class="info">
+                <div class="moneyInfo">
+                        <!-- <p class="infoP"><span id="clickM">1</span>\/click</p> -->
+                    <p class="infoP"><span id="secondM">0</span> \ / second</p>
+                </div>
+                <div class="moneyBox">
+                    <p>\ <span id="money">0</span></p>
+                </div>
+            </div>
+            <div class="play">
+                <div style="margin-top: 30px;">
+                    <p><span class="standardButtonDesign" id="clicker" onclick=clickedMan2Ya()>Click! [+1]</span></p>
+                </div>
+                <div class="upgradeBoxes">
+                    
+                    <span class="standardButtonDesign upgrade" id="clickerUpgrade">
+                        Clicker Level Up! [ \<span id="upgradeCostDis">10</span> ]
+                    </span>
+                    <br><br><br>
+                    <span class="standardButtonDesign upgrade" id="autoUpgrade1">
+                        +10\/s [ \<span id="upgradeCostDis2">100</span> ]
+                    </span>
+                    <span class="standardButtonDesign upgrade" id="autoUpgrade2">
+                        +30\/s [ \<span id="upgradeCostDis3">500</span> ]
+                    </span>
+                    <span class="standardButtonDesign upgrade" id="autoUpgrade3">
+                        +50\/s [ \<span id="upgradeCostDis4">1000</span> ]
+                    </span>
+                    <span class="standardButtonDesign upgrade" id="autoUpgrade4">
+                        +100\/s [ \<span id="upgradeCostDis5">2000</span> ]
+                    </span>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        let money = 0;
+        let level = [1, 0, 0, 0, 0];
+        let earnMoney = 1;
+        let autoEarnMoney = 0;
+        let upgradeCost = [10, 100, 500, 1000, 2000];
+        const earnMoneyAmount = [10, 30, 50, 100];
+        
+        const ids = ['#clickerUpgrade', '#autoUpgrade1', '#autoUpgrade2', '#autoUpgrade3', '#autoUpgrade4'];
+        const ids2 = ['#upgradeCostDis', '#upgradeCostDis2', '#upgradeCostDis3', '#upgradeCostDis4', '#upgradeCostDis5'];
+        const clicker = document.querySelector('#clicker');
+        const moneyDis = document.querySelector('#money');
+        
+        clicker.addEventListener('click', () => {
+            money += earnMoney;
+            moneyDis.innerHTML = Math.floor(money);
+        })
+
+        
+        for (let i = 0; i < ids.length; i++) {
+            const iID = ids[i]
+            document.querySelector(iID).addEventListener('click', () => {
+                if (upgradeCost[i] <= money) {
+                    level[i] += 1;
+                    money -= upgradeCost[i];
+                    upgradeCost[i] = Math.ceil(upgradeCost[i] * 1.4);
+                    if (i !== 0) {
+                        autoEarnMoney += earnMoneyAmount[i-1];
+                    } else if (i === 0) {
+                        earnMoney += Math.floor(level[0]*1.05);
+                    }
+    
+                    document.querySelector(ids2[i]).innerHTML = upgradeCost[i];
+                    moneyDis.innerHTML = Math.floor(money);
+                    clicker.innerHTML = `Click! [+${earnMoney}]`;
+                }
+            })
+        };
+
+        function clickedMan2Ya() {
+            let size = 11;
+            clicker.style.padding = '11px';
+
+            var repeat = setInterval(() => {
+                clicker.style.padding = `${size}px`;
+                size += 2
+
+                if (size >= 15) {
+                    clearInterval(repeat)
+                }
+            }, 50)
+        }
+        
+        
+    </script>
+    <script>
+        setInterval(() => {
+            money += autoEarnMoney/8
+            document.querySelector('#money').innerHTML = Math.floor(money);
+        }, 125)
+    </script>
+    <script> // Update()
+        setInterval(() => {
+            const va = ['#clickerUpgrade', '#autoUpgrade1', '#autoUpgrade2', '#autoUpgrade3', '#autoUpgrade4'];
+            document.querySelector('#secondM').innerHTML = autoEarnMoney;
+            for (let i = 0; i < va.length; i++) {
+                let changStyle = document.querySelector(va[i]).style;
+                if (money >= upgradeCost[i]) {
+                    changStyle.backgroundColor = 'rgb(0,255,0)';
+                    changStyle.color = '#000000';
+                } else {
+                    changStyle.backgroundColor = '#363636';
+                    changStyle.color = '#FFFFFF';
+                }
+            }
+
+
+        }, 50)
+    </script>
+</body>
+</html>
